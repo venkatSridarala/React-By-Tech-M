@@ -1,0 +1,128 @@
+import React, { useState, useEffect } from "react";
+<html><script>
+
+    const initialEmpList = [
+      { empId: "TMF1011", firstName: "Antony", lastName: "David", designation: "Manager", empAge: "42", phno: "7698790", email: "lee@gmail.com" },
+      { empId: "TMF1012", firstName: "Martin", lastName: "Luther", designation: "Lead", empAge: "36", phno: "673547879", email: "martin@gmail.com" },
+      { empId: "TMF1013", firstName: "Sara", lastName: "Jones", designation: "Developer", empAge: "30", phno: "9876543210", email: "sara@gmail.com" },
+      { empId: "TMF1014", firstName: "John", lastName: "Smith", designation: "Tester", empAge: "29", phno: "7654321890", email: "johns@gmail.com" },
+      { empId: "TMF1015", firstName: "Emily", lastName: "Clark", designation: "Manager", empAge: "41", phno: "9876543890", email: "emily@gmail.com" },
+      { empId: "TMF1016", firstName: "David", lastName: "Lee", designation: "Lead", empAge: "38", phno: "7654321009", email: "david@gmail.com" },
+      { empId: "TMF1017", firstName: "Sophia", lastName: "Green", designation: "Analyst", empAge: "28", phno: "9988776655", email: "sophia@gmail.com" },
+      { empId: "TMF1018", firstName: "Michael", lastName: "Brown", designation: "Support", empAge: "34", phno: "8866442299", email: "michael@gmail.com" },
+      { empId: "TMF1019", firstName: "Olivia", lastName: "White", designation: "Developer", empAge: "26", phno: "9988665544", email: "olivia@gmail.com" },
+      { empId: "TMF1020", firstName: "Robert", lastName: "Taylor", designation: "Intern", empAge: "22", phno: "8877665544", email: "robert@gmail.com" },
+      { empId: "TMF1021", firstName: "Jessica", lastName: "Hall", designation: "Developer", empAge: "31", phno: "8877996655", email: "jessica@gmail.com" }
+    ];
+    
+    function EmployeeSearch() {
+      const [filters, setFilters] = useState({
+        empId: "",
+        firstName: "",
+        lastName: "",
+        empAge: "",
+        designation: "",
+        phno: "",
+        email: ""
+      });
+      const [filteredData, setFilteredData] = useState(initialEmpList);
+    
+      useEffect(() => {
+        setFilteredData(initialEmpList);
+      }, []);
+    
+      const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFilters(prev => ({ ...prev, [id]: value }));
+      };
+    
+      const allowOnlyNumbers = (e) => {
+        const char = e.which ? e.which : e.keyCode;
+        if (char > 31 && (char < 48 || char > 57)) {
+          e.preventDefault();
+        }
+      };
+    
+      const doSearch = () => {
+        const { empId, firstName, lastName, empAge, designation, phno, email } = filters;
+    
+        if (empAge && isNaN(empAge)) {
+          alert("Please enter a valid number for age.");
+          return;
+        }
+        if (phno && isNaN(phno)) {
+          alert("Phone number should contain only numbers.");
+          return;
+        }
+    
+        const result = initialEmpList.filter(emp => {
+          return (!empId || emp.empId.toLowerCase().includes(empId.toLowerCase())) &&
+                 (!firstName || emp.firstName.toLowerCase().startsWith(firstName.toLowerCase())) &&
+                 (!lastName || emp.lastName.toLowerCase().startsWith(lastName.toLowerCase())) &&
+                 (!empAge || emp.empAge === empAge) &&
+                 (!designation || emp.designation.toLowerCase().includes(designation.toLowerCase())) &&
+                 (!phno || emp.phno === phno) &&
+                 (!email || emp.email.toLowerCase() === email.toLowerCase());
+        });
+    
+        setFilteredData(result);
+      };
+    
+      return (
+        <div>
+          <table>
+            <tbody>
+              <tr>
+                <td>EmpID:</td><td><input type="text" id="empId" value={filters.empId} onChange={handleChange} /></td>
+                <td>First Name:</td><td><input type="text" id="firstName" value={filters.firstName} onChange={handleChange} /></td>
+                <td>Last Name:</td><td><input type="text" id="lastName" value={filters.lastName} onChange={handleChange} /></td>
+              </tr>
+              <tr>
+                <td>Age:</td><td><input type="text" id="empAge" value={filters.empAge} onKeyPress={allowOnlyNumbers} onChange={handleChange} /></td>
+                <td>Designation:</td><td><input type="text" id="designation" value={filters.designation} onChange={handleChange} /></td>
+                <td>Phone No:</td><td><input type="text" id="phno" value={filters.phno} onKeyPress={allowOnlyNumbers} onChange={handleChange} /></td>
+              </tr>
+              <tr>
+                <td>Email:</td><td><input type="text" id="email" value={filters.email} onChange={handleChange} /></td>
+                <td colSpan="2"><button onClick={doSearch}>Search</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <br />
+          <div>
+            {filteredData.length === 0 ? (
+              <p style={{ color: "red" }}>No records found</p>
+            ) : (
+              <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                <thead>
+                  <tr>
+                    <th>Emp ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Designation</th>
+                    <th>Age</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredData.map((emp, idx) => (
+                    <tr key={idx}>
+                      <td>{emp.empId}</td>
+                      <td>{emp.firstName}</td>
+                      <td>{emp.lastName}</td>
+                      <td>{emp.designation}</td>
+                      <td>{emp.empAge}</td>
+                      <td>{emp.phno}</td>
+                      <td>{emp.email}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      );
+    }
+    
+    export default EmployeeSearch;</script></html>
